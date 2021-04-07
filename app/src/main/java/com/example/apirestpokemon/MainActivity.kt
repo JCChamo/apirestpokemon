@@ -2,16 +2,27 @@ package com.example.apirestpokemon
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.SearchView
+import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.temporal.TemporalQuery
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SearchView.OnQueryTextListener {
+
+    private lateinit var search : SearchView
+    private lateinit var recycler : RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        search = findViewById(R.id.search)
+        recycler = findViewById(R.id.recycler)
+
+        search.setOnQueryTextListener(this)
+
     }
 
     private fun getRetrofit() : Retrofit {
@@ -37,5 +48,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard() {
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String): Boolean {
+        searchByName(newText.toLowerCase())
+        return true
     }
 }
