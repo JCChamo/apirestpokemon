@@ -1,0 +1,30 @@
+https://pokeapi.co/api/v2/pokemon/bulbasaur
+
+SPRITE Y NOMBRE
+
+Sprite
+"front_default":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+
+Nombre
+"forms":[{"name":"ditto","url":"https://pokeapi.co/api/v2/pokemon-form/132/"}]
+
+
+
+NOMBRE
+ARTWORK
+TIPO/S
+4 PRIMEROS MOVIMIENTOS
+
+Tipo/s
+"types":[{"slot":1,"type":{"name":"grass","url":"https://pokeapi.co/api/v2/type/12/"}},
+{"slot":2,"type":{"name":"poison","url":"https://pokeapi.co/api/v2/type/4/"}}]
+
+Artwork
+"official-artwork":{"front_default":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"}
+
+Movimientos
+"moves":[{"move":{"name":"razor-wind","url":"https://pokeapi.co/api/v2/move/13/"},
+"version_group_details":[{"level_learned_at":0,"move_learn_method":{"name":"egg","url":"https://pokeapi.co/api/v2/move-learn-method/2/"},
+"version_group":{"name":"gold-silver","url":"https://pokeapi.co/api/v2/version-group/3/"}},
+{"level_learned_at":0,"move_learn_method":{"name":"egg","url":"https://pokeapi.co/api/v2/move-learn-method/2/"},
+"version_group":{"name":"crystal","url":"https://pokeapi.co/api/v2/version-group/4/"}}]}, (...)
