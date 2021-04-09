@@ -10,12 +10,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.apirestpokemon.models.Pokemon
 import com.squareup.picasso.Picasso
 
-class PokemonAdapter() : RecyclerView.Adapter<PokemonAdapter.ViewHolder>() {
+class PokemonListAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<PokemonListAdapter.ViewHolder>() {
     private lateinit var pokemonList : ArrayList<Pokemon>
 
-    class ViewHolder (view : View) : RecyclerView.ViewHolder(view){
+    inner class ViewHolder (view : View) : RecyclerView.ViewHolder(view), View.OnClickListener{
+
         val sprite : ImageView = view.findViewById(R.id.sprite)
         val pokemonName : TextView = view.findViewById(R.id.name)
+
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?){
+             val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION)
+                listener.onItemClick(position)
+        }
     }
 
 
@@ -26,19 +38,23 @@ class PokemonAdapter() : RecyclerView.Adapter<PokemonAdapter.ViewHolder>() {
 
     override fun getItemCount() = pokemonList.size
 
-    override fun onBindViewHolder(holder: PokemonAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val pokemon : Pokemon = pokemonList[position]
         holder.pokemonName.text = pokemon.getName()
         holder.sprite.fromUrl(pokemon)
     }
 
     fun setData(pokemonList : ArrayList<Pokemon> ) {
-        this.pokemonList = pokemonList;
-        notifyDataSetChanged();
+        this.pokemonList = pokemonList
+        notifyDataSetChanged()
     }
 
     private fun ImageView.fromUrl(pokemon : Pokemon){
         var url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
         Picasso.get().load(url + pokemon.getNumber() + ".png").into(this)
+    }
+
+    interface OnItemClickListener{
+        fun onItemClick(position: Int)
     }
 }
