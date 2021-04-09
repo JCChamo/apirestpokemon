@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.SearchView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apirestpokemon.interfaces.ApiService
@@ -23,42 +22,42 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView : RecyclerView
     lateinit var searchView : SearchView
     lateinit var pokemonAdapter : PokemonAdapter
-    var pokemonList : ArrayList<Pokemon> = ArrayList()
-
+    var pokemonList = arrayListOf<Pokemon>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recycler)
-        pokemonAdapter = PokemonAdapter()
-        recyclerView.adapter = pokemonAdapter
-        recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
-
         retrofit = Retrofit.Builder()
-            .baseUrl("https://pokeapi.co/api/v2/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+                .baseUrl("https://pokeapi.co/api/v2/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
 
         getData()
+
+        pokemonAdapter = PokemonAdapter()
+        recyclerView = findViewById(R.id.recycler)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
     }
 
-    fun getData(){
+    private fun getData(){
         doAsync {
-            var service = retrofit.create(ApiService :: class.java)
-            var response : Call<PokemonResponse> = service.getPokemonList()
-            response.enqueue(object : Callback<PokemonResponse>{
+            val service = retrofit.create(ApiService :: class.java)
+            val call : Call<PokemonResponse> = service.getPokemonList()
+            call.enqueue(object : Callback<PokemonResponse>{
                 override fun onResponse(
                     call: Call<PokemonResponse>,
                     response: Response<PokemonResponse>
                 ) {
                     if (response.isSuccessful){
-                        var pokemonResponse : PokemonResponse = response.body()!!
-                        pokemonList = pokemonResponse.results
-
-                        Log.d(":::TAG", "" + pokemonList.size)
-                        pokemonAdapter.addPokemon(pokemonList)
+                        val pokemonResponse : PokemonResponse = response.body()!!
+                        pokemonAdapter.setData(pokemonResponse.results)
+                        recyclerView.adapter = pokemonAdapter
+                        pokemonAdapter.notifyDataSetChanged()
+//                        pokemonList = pokemonResponse.results
+//                        Log.d(":::", pokemonList[0].getName())
                     } else
                         Log.e(":::TAG", "ON RESPONSE: FALLO AL ENCONTRAR LA RESPUESTA")
                 }
