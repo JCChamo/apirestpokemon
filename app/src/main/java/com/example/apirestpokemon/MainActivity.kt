@@ -7,7 +7,7 @@ import android.util.Log
 import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.apirestpokemon.interfaces.ApiService
+import com.example.apirestpokemon.interfaces.PokemonListService
 import com.example.apirestpokemon.models.PokemonListResponse
 import org.jetbrains.anko.doAsync
 import retrofit2.Call
@@ -16,7 +16,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
     lateinit var retrofit : Retrofit
     lateinit var recyclerView : RecyclerView
@@ -39,11 +39,13 @@ class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        searchView.setOnQueryTextListener(this)
+
     }
 
     private fun getData(){
         doAsync {
-            val service = retrofit.create(ApiService :: class.java)
+            val service = retrofit.create(PokemonListService :: class.java)
             val call : Call<PokemonListResponse> = service.getPokemonList(150, 0)
             call.enqueue(object : Callback<PokemonListResponse>{
                 override fun onResponse(
@@ -66,10 +68,16 @@ class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener
     }
 
     override fun onItemClick(position: Int) {
-//        toast("hola")
         val intent = Intent(this, DetailActivity::class.java)
         intent.putExtra("id", position)
-        Log.d(":::", position.toString())
         startActivity(intent)
+    }
+
+    override fun onQueryTextSubmit(p0: String?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onQueryTextChange(p0: String?): Boolean {
+        TODO("Not yet implemented")
     }
 }
