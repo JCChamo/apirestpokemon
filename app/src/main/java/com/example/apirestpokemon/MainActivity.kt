@@ -4,12 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.SearchView
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apirestpokemon.interfaces.PokemonListService
+import com.example.apirestpokemon.models.Pokemon
 import com.example.apirestpokemon.models.PokemonListResponse
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
+        searchView = findViewById(R.id.search)
         searchView.setOnQueryTextListener(this)
 
     }
@@ -73,11 +76,25 @@ class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener
         startActivity(intent)
     }
 
-    override fun onQueryTextSubmit(p0: String?): Boolean {
+    override fun onQueryTextSubmit(newText: String?): Boolean {
         TODO("Not yet implemented")
     }
 
-    override fun onQueryTextChange(p0: String?): Boolean {
-        TODO("Not yet implemented")
+    override fun onQueryTextChange(newText: String?): Boolean {
+        filter(newText!!)
+        return false
+    }
+
+    private fun filter(text : String) {
+        var updatedPokemonList = arrayListOf<Pokemon>()
+        var pokemonList = pokemonAdapter.getPokemonList()
+
+        for (i in 0 until pokemonList.size){
+            val pokemon = pokemonList[i]
+            if (pokemon.getName().startsWith(text)) {
+                updatedPokemonList.add(pokemon)
+            }
+            pokemonAdapter.filterList(updatedPokemonList)
+        }
     }
 }

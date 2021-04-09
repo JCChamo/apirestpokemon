@@ -25,8 +25,18 @@ class PokemonListAdapter(var listener: OnItemClickListener) : RecyclerView.Adapt
         override fun onClick(v: View?){
              val position = adapterPosition
             if (position != RecyclerView.NO_POSITION)
-                listener.onItemClick(position)
+                //MAL ANTES: listener.onItemClick(position)
+                listener.onItemClick(pokemonList[position].getNumber() - 1)
         }
+    }
+
+    fun filterList(updatedPokemonList: ArrayList<Pokemon>) {
+        pokemonList = updatedPokemonList;
+        notifyDataSetChanged();
+    }
+
+    fun getPokemonList(): ArrayList<Pokemon> {
+        return pokemonList
     }
 
 
