@@ -1,5 +1,7 @@
 package com.example.apirestpokemon.models
 
+import android.util.Log
+
 class Pokemon {
     private var name : String
     private var number : Int = 0
@@ -24,6 +26,6 @@ class Pokemon {
     fun getNumber() : Int {
         val spriteBaseUrl = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
         val urlTokens = url.split("/")
-        return number
+        return Integer.parseInt(urlTokens[urlTokens.size - 2])
     }
 }

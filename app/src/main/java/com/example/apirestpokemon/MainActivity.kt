@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
     private fun getData(){
         doAsync {
             val service = retrofit.create(ApiService :: class.java)
-            val call : Call<PokemonResponse> = service.getPokemonList()
+            val call : Call<PokemonResponse> = service.getPokemonList(150, 0)
             call.enqueue(object : Callback<PokemonResponse>{
                 override fun onResponse(
                     call: Call<PokemonResponse>,

@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.apirestpokemon.models.Pokemon
+import com.squareup.picasso.Picasso
 
 class PokemonAdapter() : RecyclerView.Adapter<PokemonAdapter.ViewHolder>() {
     private lateinit var pokemonList : ArrayList<Pokemon>
@@ -28,10 +29,16 @@ class PokemonAdapter() : RecyclerView.Adapter<PokemonAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: PokemonAdapter.ViewHolder, position: Int) {
         val pokemon : Pokemon = pokemonList[position]
         holder.pokemonName.text = pokemon.getName()
+        holder.sprite.fromUrl(pokemon)
     }
 
     fun setData(pokemonList : ArrayList<Pokemon> ) {
         this.pokemonList = pokemonList;
         notifyDataSetChanged();
+    }
+
+    private fun ImageView.fromUrl(pokemon : Pokemon){
+        var url = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
+        Picasso.get().load(url + pokemon.getNumber() + ".png").into(this)
     }
 }
