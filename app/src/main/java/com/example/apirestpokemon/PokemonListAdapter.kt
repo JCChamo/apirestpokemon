@@ -10,7 +10,7 @@ import com.example.apirestpokemon.models.Pokemon
 import com.squareup.picasso.Picasso
 
 class PokemonListAdapter(var listener: OnItemClickListener) : RecyclerView.Adapter<PokemonListAdapter.ViewHolder>() {
-    private lateinit var pokemonList : ArrayList<Pokemon>
+    private var pokemonList = arrayListOf<Pokemon>()
 
     inner class ViewHolder (view : View) : RecyclerView.ViewHolder(view), View.OnClickListener{
 

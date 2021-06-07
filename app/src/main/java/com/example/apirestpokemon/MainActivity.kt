@@ -1,40 +1,29 @@
 package com.example.apirestpokemon
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.apirestpokemon.interfaces.PokemonListService
 import com.example.apirestpokemon.models.Pokemon
-import com.example.apirestpokemon.models.PokemonListResponse
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.toast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.apirestpokemon.models.PokemonListViewModel
 
 class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener, SearchView.OnQueryTextListener {
 
-    lateinit var retrofit : Retrofit
     lateinit var recyclerView : RecyclerView
     lateinit var searchView : SearchView
     lateinit var pokemonAdapter : PokemonListAdapter
+    private lateinit var pokemonListViewModel : PokemonListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main);
 
-        retrofit = Retrofit.Builder()
-                .baseUrl("https://pokeapi.co/api/v2/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
 
-        getData()
+        pokemonListViewModel = ViewModelProvider(this).get(PokemonListViewModel::class.java)
 
         pokemonAdapter = PokemonListAdapter(this)
         recyclerView = findViewById(R.id.recycler)
@@ -44,30 +33,18 @@ class MainActivity : AppCompatActivity(), PokemonListAdapter.OnItemClickListener
         searchView = findViewById(R.id.search)
         searchView.setOnQueryTextListener(this)
 
+        getData()
+
     }
 
     private fun getData(){
-        doAsync {
-            val service = retrofit.create(PokemonListService :: class.java)
-            val call : Call<PokemonListResponse> = service.getPokemonList(150, 0)
-            call.enqueue(object : Callback<PokemonListResponse>{
-                override fun onResponse(
-                        call: Call<PokemonListResponse>,
-                        listResponse: Response<PokemonListResponse>
-                ) {
-                    if (listResponse.isSuccessful){
-                        val pokemonListResponse : PokemonListResponse = listResponse.body()!!
-                        pokemonAdapter.setData(pokemonListResponse.results)
-                        recyclerView.adapter = pokemonAdapter
-                        pokemonAdapter.notifyDataSetChanged()
-                    } else
-                        Log.e(":::TAG", "ON RESPONSE: FALLO AL ENCONTRAR LA RESPUESTA")
-                }
-                override fun onFailure(call: Call<PokemonListResponse>, t: Throwable) {
-                    Log.e(":::TAG", "ON FAILURE: FALLO AL ENCONTRAR LA RESPUESTA")
-                }
-            })
-        }
+        recyclerView.adapter = pokemonAdapter
+        pokemonListViewModel.getPokemonList()
+
+        pokemonListViewModel.pokemonList.observe(this, Observer { list ->
+            (recyclerView.adapter as PokemonListAdapter).setData(list.results)
+        })
+        pokemonAdapter.notifyDataSetChanged()
     }
 
     override fun onItemClick(position: Int) {
